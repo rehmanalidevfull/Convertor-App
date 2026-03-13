@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONVERT · 5-in-1 toolkit</title>
+    <!-- modern font & icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: #0b1019;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            color: #f0f6ff;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        /* main container */
+        .card {
+            background: #141f2d;
+            border: 1px solid #2b405a;
+            border-radius: 3rem;
+            box-shadow: 0 30px 50px -20px #000000cc, 0 0 0 1px #334b68 inset;
+            width: 100%;
+            padding: 2.5rem 1.8rem;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .home-card {
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .converter-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 3.2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, #ffffff, #adcbff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.2rem;
+            text-shadow: 0 0 20px #3f6eff;
+        }
+
+        .subhead {
+            color: #9bb9e6;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+            border-bottom: 1px dashed #3e5c81;
+            padding-bottom: 1rem;
+        }
+
+        .guide-badge {
+            background: #1b2e45;
+            border-radius: 60px;
+            padding: 0.8rem 2rem;
+            margin: 1.2rem 0 2rem 0;
+            border: 1px solid #44658b;
+            font-size: 0.95rem;
+            color: #cae0ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guide-badge i {
+            color: #f5c542;
+        }
+
+        /* tool grid */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            width: 100%;
+            margin: 1.8rem 0;
+        }
+
+        .tool-item {
+            background: #1c2c40;
+            border: 1px solid #38506e;
+            border-radius: 2rem;
+            padding: 1.5rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 0 #0f1a27;
+        }
+
+        .tool-item i {
+            font-size: 2.3rem;
+            color: #7fa9ff;
+        }
+
+        .tool-item span {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .tool-item:hover {
+            background: #25445f;
+            border-color: #6495ed;
+            transform: translateY(-3px);
+        }
+
+        .tool-item:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #0f1a27;
+        }
+
+        /* back button */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #263d59;
+            border: none;
+            color: white;
+            height: 48px;
+            width: 48px;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #12212f;
+            transition: 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #537bb5;
+            z-index: 10;
+        }
+
+        .back-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #12212f;
+        }
+
+        /* converter common */
+        .converter-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0.5rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-block {
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1f3147;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            border: 1px solid #3f5e86;
+            margin: 0.8rem 0;
+        }
+
+        .label-row label {
+            font-weight: 600;
+            color: #cadeff;
+        }
+
+        select {
+            background: #102437;
+            color: white;
+            border: 1px solid #557fc2;
+            border-radius: 3rem;
+            padding: 0.5rem 2rem 0.5rem 1.2rem;
+            font-weight: 500;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #1e3147;
+            border: 2px solid black;
+            border-radius: 3rem;
+            padding: 1rem 2rem;
+            font-size: 1.4rem;
+            color: white;
+            outline: none;
+            transition: 0.15s;
+            text-align: right;
+        }
+
+        .input-field:focus {
+            border-color: #5d8eff;
+            box-shadow: 0 0 0 3px #1e3f9e55;
+        }
+
+        .input-field[readonly] {
+            background: #172635;
+            color: #bed6ff;
+            font-weight: 600;
+        }
+
+        .warning-msg {
+            color: #ffae9e;
+            font-size: 0.8rem;
+            margin-left: 1.5rem;
+            min-height: 1.2rem;
+            font-weight: 500;
+        }
+
+        .convert-action {
+            background: linear-gradient(145deg, #2e6aaf, #194472);
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.4rem;
+            padding: 1rem 2.8rem;
+            border-radius: 4rem;
+            margin: 1.2rem 0 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #10345c, 0 10px 25px black;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #629cff;
+        }
+
+        .convert-action:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #10345c;
+        }
+
+        .info-note {
+            background: #1b3148;
+            border-radius: 60px;
+            padding: 0.7rem 1.8rem;
+            font-size: 0.9rem;
+            color: #b3d1ff;
+            margin-top: 1rem;
+            border: 1px solid #486a92;
+        }
+
+        .info-note i {
+            color: #ffd966;
+            margin-right: 6px;
+        }
+
+        .footer-credit {
+            font-size: 1rem;
+            color: #6e8bb0;
+            background: #0d1a28;
+            padding: 0.6rem 2rem;
+            border-radius: 100px;
+            border: 1px solid #304b6b;
+        }
+
+        .footer-credit strong {
+            color: #c2deff;
+            font-weight: 600;
+        }
+
+        .ani-in {
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            0% { opacity: 0.3; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- HOME / MAIN MENU -->
+        <div id="homeCard" class="card home-card">
+            <h1><i class="fas fa-calculator"></i> CONVERT</h1>
+            <div class="subhead">universal converter · 5 tools</div>
+
+            <div class="guide-badge">
+                <i class="fas fa-lightbulb"></i> select a converter, enter value & choose units → instant result
+            </div>
+
+            <!-- 5 converters grid -->
+            <div class="tool-grid">
+                <div class="tool-item" onclick="showConverter('currency')">
+                    <i class="fas fa-coins"></i>
+                    <span>Currency</span>
+                </div>
+                <div class="tool-item" onclick="showConverter('length')">
+                    <i class="fas fa-ruler"></i>
+                    <span>Length</span>
+                </div>
+                <div class="tool-item" onclick="showConverter('weight')">
+                    <i class="fas fa-weight-scale"></i>
+                    <span>Weight</span>
+                </div>
+                <div class="tool-item" onclick="showConverter('temperature')">
+                    <i class="fas fa-temperature-high"></i>
+                    <span>Temp</span>
+                </div>
+                <div class="tool-item" onclick="showConverter('unit')">
+                    <i class="fas fa-cubes"></i>
+                    <span>Unit</span>
+                </div>
+                <div class="tool-item" style="background:#253f5a;" onclick="showConverter('all')">
+                    <i class="fas fa-info-circle"></i>
+                    <span>How to</span>
+                </div>
+            </div>
+
+            <div class="info-note">
+                <i class="fas fa-globe"></i> currency: live rates via frankfurter API · fallback preset
+            </div>
+        </div>
+
+        <!-- ========== CURRENCY PANEL ========= -->
+        <div id="currencyPanel" class="card converter-panel">
+            <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+            <div class="converter-title"><i class="fas fa-globe"></i> currency</div>
+            <div class="info-note" style="margin-bottom:8px;"><i class="fas fa-circle-info"></i> select currencies, enter amount → convert</div>
+
+            <div class="input-block">
+                <div class="label-row"><label>from</label> <select id="curFrom"><option value="USD">🇺🇸 USD</option><option value="PKR" selected>🇵🇰 PKR</option><option value="EUR">🇪🇺 EUR</option><option value="GBP">🇬🇧 GBP</option><option value="INR">🇮🇳 INR</option><option value="JPY">🇯🇵 JPY</option><option value="AED">🇦🇪 AED</option><option value="SAR">🇸🇦 SAR</option></select></div>
+                <span id="curWarnFrom" class="warning-msg"></span>
+                <input type="number" id="curAmount" class="input-field" value="1.00" placeholder="amount">
+            </div>
+            <div class="input-block">
+                <div class="label-row"><label>to</label> <select id="curTo"><option value="PKR">🇵🇰 PKR</option><option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option><option value="GBP">🇬🇧 GBP</option><option value="INR">🇮🇳 INR</option><option value="JPY">🇯🇵 JPY</option><option value="AED">🇦🇪 AED</option><option value="SAR">🇸🇦 SAR</option></select></div>
+                <span id="curWarnTo" class="warning-msg"></span>
+                <input type="number" id="curResult" class="input-field" readonly placeholder="result">
+            </div>
+            <button class="convert-action" onclick="convertCurrency()"><i class="fas fa-arrow-right-arrow-left"></i> convert</button>
+            <div id="rateInfo" class="info-note"><i class="fas fa-database"></i> live rates · daily</div>
+        </div>
+
+        <!-- LENGTH PANEL -->
+        <div id="lengthPanel" class="card converter-panel">
+            <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+            <div class="converter-title"><i class="fas fa-ruler"></i> length</div>
+            <div class="info-note"><i class="fas fa-arrow-right"></i> km · m · cm · mm · mile · yard · foot · inch</div>
+            <div class="input-block">
+                <div class="label-row"><label>from</label> <select id="lenFrom"><option value="0">select</option><option value="1" selected>km</option><option value="2">m</option><option value="3">cm</option><option value="4">mm</option><option value="5">mile</option><option value="6">yard</option><option value="7">foot</option><option value="8">inch</option></select></div>
+                <span id="lenWarnFrom" class="warning-msg"></span>
+                <input type="number" id="lenInput" class="input-field" value="1" placeholder="value">
+            </div>
+            <div class="input-block">
+                <div class="label-row"><label>to</label> <select id="lenTo"><option value="0">select</option><option value="1">km</option><option value="2" selected>m</option><option value="3">cm</option><option value="4">mm</option><option value="5">mile</option><option value="6">yard</option><option value="7">foot</option><option value="8">inch</option></select></div>
+                <span id="lenWarnTo" class="warning-msg"></span>
+                <input type="number" id="lenResult" class="input-field" readonly>
+            </div>
+            <button class="convert-action" onclick="convertLength()"><i class="fas fa-scale-balanced"></i> convert</button>
+        </div>
+
+        <!-- WEIGHT PANEL -->
+        <div id="weightPanel" class="card converter-panel">
+            <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+            <div class="converter-title"><i class="fas fa-weight-scale"></i> weight</div>
+            <div class="info-note">kg · g · mg · pound · ounce · ton</div>
+            <div class="input-block">
+                <div class="label-row"><label>from</label> <select id="wFrom"><option value="0">select</option><option value="1" selected>kg</option><option value="2">g</option><option value="3">mg</option><option value="4">lb</option><option value="5">oz</option><option value="6">ton</option></select></div>
+                <span id="wWarnFrom" class="warning-msg"></span>
+                <input type="number" id="wInput" class="input-field" value="1">
+            </div>
+            <div class="input-block">
+                <div class="label-row"><label>to</label> <select id="wTo"><option value="0">select</option><option value="1">kg</option><option value="2">g</option><option value="3">mg</option><option value="4">lb</option><option value="5">oz</option><option value="6">ton</option></select></div>
+                <span id="wWarnTo" class="warning-msg"></span>
+                <input type="number" id="wResult" class="input-field" readonly>
+            </div>
+            <button class="convert-action" onclick="convertWeight()"><i class="fas fa-weight-hanging"></i> convert</button>
+        </div>
+
+        <!-- TEMPERATURE PANEL -->
+        <div id="tempPanel" class="card converter-panel">
+            <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+            <div class="converter-title"><i class="fas fa-temperature-high"></i> temperature</div>
+            <div class="info-note">Celsius · Fahrenheit · Kelvin</div>
+            <div class="input-block">
+                <div class="label-row"><label>from</label> <select id="tempFrom"><option value="C" selected>Celsius</option><option value="F">Fahrenheit</option><option value="K">Kelvin</option></select></div>
+                <span id="tempWarnFrom" class="warning-msg"></span>
+                <input type="number" id="tempInput" class="input-field" value="0">
+            </div>
+            <div class="input-block">
+                <div class="label-row"><label>to</label> <select id="tempTo"><option value="F">Fahrenheit</option><option value="C" selected>Celsius</option><option value="K">Kelvin</option></select></div>
+                <span id="tempWarnTo" class="warning-msg"></span>
+                <input type="number" id="tempResult" class="input-field" readonly>
+            </div>
+            <button class="convert-action" onclick="convertTemp()"><i class="fas fa-thermometer-half"></i> convert</button>
+        </div>
+
+        <!-- GENERAL UNIT (ex area/volume simplified) but we call it 'Unit' extra -->
+        <div id="unitPanel" class="card converter-panel">
+            <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+            <div class="converter-title"><i class="fas fa-cubes"></i> area / volume</div>
+            <div class="info-note">sq meter · sq km · liter · gallon</div>
+            <div class="input-block">
+                <div class="label-row"><label>from</label> <select id="genFrom"><option value="0">select</option><option value="1" selected>m²</option><option value="2">km²</option><option value="3">liter</option><option value="4">gallon</option></select></div>
+                <span id="genWarnFrom" class="warning-msg"></span>
+                <input type="number" id="genInput" class="input-field" value="1">
+            </div>
+            <div class="input-block">
+                <div class="label-row"><label>to</label> <select id="genTo"><option value="0">select</option><option value="1">m²</option><option value="2">km²</option><option value="3">liter</option><option value="4">gallon</option></select></div>
+                <span id="genWarnTo" class="warning-msg"></span>
+                <input type="number" id="genResult" class="input-field" readonly>
+            </div>
+            <button class="convert-action" onclick="convertGeneric()"><i class="fas fa-rotate"></i> convert</button>
+        </div>
+
+        <!-- HOW TO PANEL (extra info) -->
+        <div id="howtoPanel" class="card converter-panel">
+            <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+            <div class="converter-title"><i class="fas fa-book-open"></i> quick guide</div>
+            <div style="text-align: left; background:#1b2b40; padding:2rem; border-radius:2.5rem; margin-top:1rem;">
+                <p style="margin:1rem 0"><i class="fas fa-circle-check" style="color:#7bed9f;"></i> <strong>Currency:</strong> live via API, fallback preset. Select from/to, enter amount.</p>
+                <p style="margin:1rem 0"><i class="fas fa-circle-check" style="color:#7bed9f;"></i> <strong>Length:</strong> supports metric & imperial (inch, mile etc).</p>
+                <p style="margin:1rem 0"><i class="fas fa-circle-check" style="color:#7bed9f;"></i> <strong>Weight:</strong> kg, g, lb, oz, ton.</p>
+                <p style="margin:1rem 0"><i class="fas fa-circle-check" style="color:#7bed9f;"></i> <strong>Temperature:</strong> C, F, K — formulas applied.</p>
+                <p style="margin:1rem 0"><i class="fas fa-circle-check" style="color:#7bed9f;"></i> <strong>Area/Volume:</strong> simple square/gallon conversion.</p>
+                <p style="margin:2rem 0 0 0; background:#1f3750; padding:1.2rem; border-radius:2rem;"><i class="fas fa-star" style="color:gold;"></i> developed by <strong>Rehman Ali</strong> · clean & modern</p>
+            </div>
+        </div>
+
+        <div class="footer-credit">
+            <i class="fas fa-code"></i> developed by <strong>Rehman Ali</strong> · 5 converters
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // panels
+            const home = document.getElementById('homeCard');
+            const panels = {
+                currency: document.getElementById('currencyPanel'),
+                length: document.getElementById('lengthPanel'),
+                weight: document.getElementById('weightPanel'),
+                temperature: document.getElementById('tempPanel'),
+                unit: document.getElementById('unitPanel'),
+                howto: document.getElementById('howtoPanel')
+            };
+
+            window.showConverter = function(type) {
+                home.style.display = 'none';
+                Object.values(panels).forEach(p => p.style.display = 'none');
+                if (type === 'currency') panels.currency.style.display = 'flex';
+                else if (type === 'length') panels.length.style.display = 'flex';
+                else if (type === 'weight') panels.weight.style.display = 'flex';
+                else if (type === 'temperature') panels.temperature.style.display = 'flex';
+                else if (type === 'unit') panels.unit.style.display = 'flex';
+                else if (type === 'all') panels.howto.style.display = 'flex';
+                // add animation
+                document.querySelector('.card.converter-panel[style*="flex"]')?.classList.add('ani-in');
+            };
+
+            window.goHome = function() {
+                Object.values(panels).forEach(p => p.style.display = 'none');
+                home.style.display = 'flex';
+                home.classList.add('ani-in');
+            };
+
+            // ----- CURRENCY with API -----
+            let rates = { USD:1, PKR:278.5, EUR:0.92, GBP:0.79, INR:83.1, JPY:151.5, AED:3.67, SAR:3.75 };
+            fetch('https://api.frankfurter.app/latest?from=USD')
+                .then(r => r.json())
+                .then(data => { if (data?.rates) { rates = {...rates, ...data.rates}; document.getElementById('rateInfo').innerHTML = '<i class=\"fas fa-check-circle\"></i> live rates · updated'; } })
+                .catch(() => document.getElementById('rateInfo').innerHTML = '<i class=\"fas fa-exclamation-triangle\"></i> offline preset');
+
+            window.convertCurrency = function() {
+                const from = document.getElementById('curFrom').value;
+                const to = document.getElementById('curTo').value;
+                const amt = parseFloat(document.getElementById('curAmount').value);
+                document.getElementById('curWarnFrom').innerText = '';
+                document.getElementById('curWarnTo').innerText = '';
+                if (!from || !to) return;
+                if (isNaN(amt) || amt<=0) { document.getElementById('curWarnFrom').innerText = 'enter positive amount'; return; }
+                const inUSD = from === 'USD' ? amt : amt / rates[from];
+                const result = to === 'USD' ? inUSD : inUSD * rates[to];
+                document.getElementById('curResult').value = result.toFixed(4);
+            };
+
+            // ----- LENGTH (meter base) -----
+            const lenFactors = { '1':1000, '2':1, '3':0.01, '4':0.001, '5':1609.344, '6':0.9144, '7':0.3048, '8':0.0254 };
+            window.convertLength = function() {
+                const f = document.getElementById('lenFrom').value;
+                const t = document.getElementById('lenTo').value;
+                const val = parseFloat(document.getElementById('lenInput').value);
+                document.getElementById('lenWarnFrom').innerText = '';
+                document.getElementById('lenWarnTo').innerText = '';
+                if (f==='0' || t==='0') { document.getElementById('lenWarnFrom').innerText = 'select both units'; return; }
+                if (isNaN(val)) { document.getElementById('lenWarnFrom').innerText = 'enter number'; return; }
+                const meters = val * lenFactors[f];
+                const result = meters / lenFactors[t];
+                document.getElementById('lenResult').value = result.toFixed(6);
+            };
+
+            // ----- WEIGHT (kg base) -----
+            const weightBase = { '1':1, '2':0.001, '3':1e-6, '4':0.453592, '5':0.0283495, '6':1000 }; // kg
+            window.convertWeight = function() {
+                const f = document.getElementById('wFrom').value;
+                const t = document.getElementById('wTo').value;
+                const val = parseFloat(document.getElementById('wInput').value);
+                document.getElementById('wWarnFrom').innerText = ''; document.getElementById('wWarnTo').innerText = '';
+                if (f==='0'||t==='0') { document.getElementById('wWarnFrom').innerText = 'select unit'; return; }
+                if (isNaN(val)) { document.getElementById('wWarnFrom').innerText = 'enter number'; return; }
+                const kg = val * weightBase[f];
+                const result = kg / weightBase[t];
+                document.getElementById('wResult').value = result.toFixed(6);
+            };
+
+            // TEMPERATURE
+            window.convertTemp = function() {
+                const from = document.getElementById('tempFrom').value;
+                const to = document.getElementById('tempTo').value;
+                let val = parseFloat(document.getElementById('tempInput').value);
+                if (isNaN(val)) { document.getElementById('tempWarnFrom').innerText = 'enter temp'; return; }
+                document.getElementById('tempWarnFrom').innerText = '';
+                // to celsius first
+                if (from === 'C') {}
+                else if (from === 'F') val = (val - 32) * 5/9;
+                else if (from === 'K') val = val - 273.15;
+                // from celsius to target
+                if (to === 'C') document.getElementById('tempResult').value = val.toFixed(2);
+                else if (to === 'F') document.getElementById('tempResult').value = (val * 9/5 + 32).toFixed(2);
+                else if (to === 'K') document.getElementById('tempResult').value = (val + 273.15).toFixed(2);
+            };
+
+            // GENERIC area/volume (m², km², liter, gallon)
+            const genericFactors = { '1':1, '2':1e6, '3':0.001, '4':3.78541 }; // to m³ base? but we use direct: m² base for area, but for demo we keep relative
+            window.convertGeneric = function() {
+                const f = document.getElementById('genFrom').value;
+                const t = document.getElementById('genTo').value;
+                const val = parseFloat(document.getElementById('genInput').value);
+                document.getElementById('genWarnFrom').innerText = ''; document.getElementById('genWarnTo').innerText = '';
+                if (f==='0'||t==='0') { document.getElementById('genWarnFrom').innerText = 'select unit'; return; }
+                if (isNaN(val)) { document.getElementById('genWarnFrom').innerText = 'enter number'; return; }
+                let baseVal = val;
+                if (f=='1') baseVal = val; // m²
+                else if (f=='2') baseVal = val * 1e6; // km² to m²
+                else if (f=='3') baseVal = val * 0.001; // liter to m³ (approx)
+                else if (f=='4') baseVal = val * 3.78541; // gallon to liters then to m³ approx but keep ratio
+
+                let result = baseVal;
+                if (t=='1') result = baseVal;
+                else if (t=='2') result = baseVal / 1e6;
+                else if (t=='3') result = baseVal / 0.001; // to liter
+                else if (t=='4') result = baseVal / 3.78541; // to gallon
+                document.getElementById('genResult').value = result.toFixed(6);
+            };
+
+            // legacy names (if any)
+            window.C_Convertor = window.convertCurrency;
+            window.U_Converter = window.convertGeneric;
+        })();
+    </script>
+</body>
+</html>
